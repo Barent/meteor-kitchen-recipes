@@ -15,8 +15,8 @@
 				"name": "companies",
 				"roles_allowed_to_read": ["admin", "owner", "manager"],
                 "roles_allowed_to_insert": ["admin", "manager", "user"],
-                "roles_allowed_to_update": ["admin", "manager"],
-                "roles_allowed_to_delete": ["admin"],
+                "roles_allowed_to_update": ["admin", "manager", "owner"],
+                "roles_allowed_to_delete": ["admin", "owner"],
 				"fields": [
 					{ "name": "name", "title": "Name", "required": true, "exportable": true },
 					{ "name": "phone", "title": "Phone", "default": "-", "exportable": true },
@@ -24,6 +24,7 @@
 					{ "name": "note", "title": "Note", "input": "textarea", "exportable": true },
 					{
 						"name": "contactId",
+						"title": "contact",
 						"join_collection": "contacts",
 						"join_container": "contacts",
 						"join_fields": ["name"]
@@ -36,8 +37,8 @@
 				"name": "contacts",
 				"roles_allowed_to_read": ["admin", "owner", "manager"],
                 "roles_allowed_to_insert": ["admin", "manager", "user"],
-                "roles_allowed_to_update": ["admin", "manager"],
-                "roles_allowed_to_delete": ["admin"],
+                "roles_allowed_to_update": ["admin", "manager", "owner"],
+                "roles_allowed_to_delete": ["admin", "owner"],
 					"fields":[
 						{"name": "name", "title": "Name", "required": true, "exportable": true},
 						{ "name": "phone", "title": "Phone", "default": "-", "exportable": true },
@@ -49,18 +50,20 @@
 				"name": "opportunities",
 				"roles_allowed_to_read": ["admin", "owner", "manager"],
                 "roles_allowed_to_insert": ["admin", "manager", "user"],
-                "roles_allowed_to_update": ["admin", "manager"],
-                "roles_allowed_to_delete": ["admin"],
+                "roles_allowed_to_update": ["admin", "manager", "owner"],
+                "roles_allowed_to_delete": ["admin", "owner"],
 					"fields":[
 						{"name": "subject", "title": "Subject", "required": true, "exportable": true},
 						{
 						"name": "contactId",
+						"title": "contact",
 						"join_collection": "contacts",
 						"join_container": "contacts",
 						"join_fields": ["name"]
 						},
 						{
 						"name": "companyId",
+						"title": "comapny",
 						"join_collection": "companies",
 						"join_container": "companies",
 						"join_fields": ["name"]
