@@ -3,7 +3,7 @@
 
 		"title": "Cedar CRM",
 
-		"theme": "bootswatch-cerulean",
+		"theme": "bootswatch-superhero",
 
 		"use_collection2": false,
 		
@@ -27,7 +27,7 @@
 						"title": "contact",
 						"join_collection": "contacts",
 						"join_container": "contacts",
-						"join_fields": ["name"]
+						"join_fields": ["contactId"]
 					},
 					{ "name": "active", "title": "Active", "type": "bool", "input": "checkbox", "display_helper": "booleanToYesNo", "exportable": true }
 				],
@@ -59,14 +59,14 @@
 						"title": "contact",
 						"join_collection": "contacts",
 						"join_container": "contacts",
-						"join_fields": ["name"]
+						"join_fields": ["contactId"]
 						},
 						{
 						"name": "companyId",
 						"title": "comapny",
 						"join_collection": "companies",
 						"join_container": "companies",
-						"join_fields": ["name"]
+						"join_fields": ["companyId"]
 						},
 						{ "name": "amount", "title": "Amount", "exportable": true },
 						{ "name": "note", "title": "Note", "input": "textarea", "exportable": true }								
