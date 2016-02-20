@@ -1,0 +1,213 @@
+{
+	"application": {
+
+		"title": "Research-Helper",
+
+		"theme": "bootswatch-superhero",
+
+		"use_collection2": true,
+		
+		"roles": ["admin", "user"],
+        "default_role": "user",
+
+		"collections": [
+			{
+				"name": "items",
+				"roles_allowed_to_read": ["admin", "owner"],
+                "roles_allowed_to_insert": ["admin", "user"],
+                "roles_allowed_to_update": ["admin", "owner"],
+                "roles_allowed_to_delete": ["admin", "owner"],
+				"fields": [
+					{ "name": "Id", "title": "Id", "required": true, "exportable": true },
+					{ "name": "Name", "title": "Name", "exportable": true },
+					{ "name": "Observation_One", "title": "Observation_One", "exportable": true },
+					{ "name": "Observation_Two", "title": "Observation_Two", "exportable": true },
+					{ "name": "Observation_Three", "title": "Observation_Three", "exportable": true },
+					{ "name": "Observation_Four", "title": "Observation_Four", "exportable": true },
+					{ "name": "Observation_Five", "title": "Observation_Five", "exportable": true },					
+					{ "name": "Notes", "title": "Notes", "input": "textarea", "exportable": true }
+					
+				]
+			}
+			
+		],
+
+		"queries": [
+			{
+				"name": "items",
+				"collection": "items",
+				"filter": {}
+			},
+			{
+				"name": "items_empty",
+				"collection": "items",
+				"filter": {"_id": null},
+				"find_one": true
+			},
+			{
+				"name": "item",
+				"collection": "items",
+				"filter": { "_id": ":Id" },
+				"find_one": true
+			}
+		],
+		"public_zone": {
+
+            "pages": [
+                { 
+				 "name": "home_public", "title": 
+				 "Research Helper", 
+				 "text": "This is an applicaiton for simple research data collection from mobile devices. Use it to record data and then export it to excel. Please delete data once you are finished." 
+				},
+                { "name": "login", "template": "login" },
+                { "name": "register", "template": "register" },
+                { "name": "forgot_password", "template": "forgot_password" },
+                { "name": "reset_password", "template": "reset_password", "route_params": ["resetPasswordToken"] }
+            ],
+
+            "components": [
+                {
+                    "name": "left_menu",
+                    "type": "menu",
+                    "class": "nav navbar-nav",
+                    "dest_selector": "#menu",
+                    "items": [
+                        { "title": "Home", "route": "home_public" }
+                    ]
+                },
+
+                {
+                    "name": "right_menu",
+                    "type": "menu",
+                    "class": "nav navbar-nav navbar-right",
+                    "dest_selector": "#menu",
+                    "items": [
+						{ "title": "Login", "route": "login" },
+                        { "title": "Register", "route": "register" }
+                        
+                    ]
+                }
+            ]
+        },
+		
+		"private_zone": {
+
+			"components": [
+				{
+					"name": "main_menu",
+					"type": "menu",
+					"items": [
+						{ "title": "Home page", "route": "home_private" },
+						{ "title": "items", "route": "items" },						
+						{ "title": "Admin", "route": "admin_panel" },
+						{ "title": "Logout", "route": "logout" }
+					]
+				}
+			],
+
+			"pages": [
+				{
+                    "name": "admin_panel",
+                    "title": "Admin panel",
+                    "roles": ["admin"],
+                   
+                },
+                { "name": "logout", "template": "logout" },
+				{
+					"name": "home_private",
+					"title": "",
+					"components": [
+						{
+							"name": "home_jumbotron",
+							"title": "Research Inventory",
+							"type": "jumbotron",
+							"text": "This is an applicaiton for simple research data collection",
+							"button_title": "Continue &raquo;",
+							"button_route": "items"
+						}
+					]
+				},
+				{
+					"name": "items",
+					"components": [
+						{
+							"name": "view",
+							"type": "data_view",
+							"title": "items",
+							"text_if_empty": "No items :(",
+
+							"query_name": "items",
+							"query_params": [],
+
+							"insert_route": "items.insert",
+							"edit_route": "items.edit",
+							"edit_route_params": [
+								{ "name": "Id", "value": "this._id" }
+							],
+							"details_route": "items.details",
+							"details_route_params": [
+								{ "name": "Id", "value": "this._id" }
+							]
+						}
+					],
+					"pages": [
+						{
+							"name": "insert",
+							"components": [
+								{
+									"name": "insert_form",
+									"type": "form",
+									"mode": "insert",
+									"title": "New item",
+
+									"query_name": "items_empty",
+									"query_params": [],
+
+									"submit_route": "items",
+									"cancel_route": "items"
+								}
+							]
+						},
+						{
+							"name": "details",
+							"route_params": ["Id"],
+							"components": [
+								{
+									"name": "details_form",
+									"type": "form",
+									"mode": "read_only",
+									"title": "Details",
+									"layout": "horizontal",
+
+									"query_name": "item",
+									"query_params": [],
+
+									"close_route": "items",
+									"back_route": "items"
+								}
+							]
+						},
+
+						{
+							"name": "edit",
+							"route_params": ["Id"],
+							"components": [
+								{
+									"name": "edit_form",
+									"type": "form",
+									"mode": "update",
+									"title": "Edit item",
+									"submit_route": "items",
+									"cancel_route": "items",
+
+									"query_name": "item",
+									"query_params": []
+								}
+							]
+						}
+					]
+				}				
+			]
+		}
+	}
+}
