@@ -115,21 +115,102 @@
         },
 		
 		"private_zone": {
-
-			"components": [
-				{
-					"name": "main_menu",
-					"type": "menu",
-					"items": [
-						{ "title": "Home page", "route": "home_private" },
-						{ "title": "Appointments", "route": "appointments" },						
-						{ "title": "Admin", "route": "admin" },
-						{ "title": "Logout", "route": "logout" }
-					]
-				}
-			],
-
 			"pages": [
+				{
+					"name": "home_private",
+					"title": "",
+					"components": [
+						{
+							"name": "home_jumbotron",
+							"title": "Research Inventory",
+							"type": "jumbotron",
+							"text": "This is an applicaiton for simple research data collection",
+							"button_title": "Continue &raquo;",
+							"button_route": "appointments"
+						}
+					]
+				},
+				{
+					"name": "appointments",
+					"components": [
+						{
+							"name": "view",
+							"type": "data_view",
+							"title": "appointments",
+							"text_if_empty": "No appointments :(",
+
+							"query_name": "appointments",
+							"query_params": [],
+
+							"insert_route": "appointments.insert",
+							"edit_route": "appointments.edit",
+							"edit_route_params": [
+								{ "name": "Id", "value": "this._id" }
+							],
+							"details_route": "appointments.details",
+							"details_route_params": [
+								{ "name": "Id", "value": "this._id" }
+							]
+						}
+					],
+					"pages": [
+						{
+							"name": "insert",
+							"components": [
+								{
+									"name": "insert_form",
+									"type": "form",
+									"mode": "insert",
+									"title": "New appointment",
+
+									"query_name": "appointments_empty",
+									"query_params": [],
+
+									"submit_route": "appointments",
+									"cancel_route": "appointments"
+								}
+							]
+						},
+						{
+							"name": "details",
+							"route_params": ["Id"],
+							"components": [
+								{
+									"name": "details_form",
+									"type": "form",
+									"mode": "read_only",
+									"title": "Details",
+									"layout": "horizontal",
+
+									"query_name": "appointment",
+									"query_params": [],
+
+									"close_route": "appointments",
+									"back_route": "appointments"
+								}
+							]
+						},
+
+						{
+							"name": "edit",
+							"route_params": ["Id"],
+							"components": [
+								{
+									"name": "edit_form",
+									"type": "form",
+									"mode": "update",
+									"title": "Edit appointment",
+									"submit_route": "appointments",
+									"cancel_route": "appointments",
+
+									"query_name": "appointment",
+									"query_params": []
+								}
+							]
+						}
+					]
+				},	
+
 				{
 					"name": "admin",
 					"roles": ["admin"],
@@ -296,102 +377,41 @@
 						}
 					]
 				},
-                { "name": "logout", "template": "logout" },
+
+				{ "name": "logout", "template": "logout" }
+			],
+			"components": [
 				{
-					"name": "home_private",
-					"title": "",
-					"components": [
-						{
-							"name": "home_jumbotron",
-							"title": "Research Inventory",
-							"type": "jumbotron",
-							"text": "This is an applicaiton for simple research data collection",
-							"button_title": "Continue &raquo;",
-							"button_route": "appointments"
-						}
+					"name": "main_menu",
+					"type": "menu",
+					"items": [
+						{ "title": "Home page", "route": "home_private" },
+						{ "title": "Appointments", "route": "appointments" }						
+						
+						
 					]
 				},
 				{
-					"name": "appointments",
-					"components": [
+					"name": "right_menu",
+					"type": "menu",
+					"class": "nav navbar-nav navbar-right",
+					"dest_selector": "#menu",
+					"items": [
+						{ "title": "Admin", "route": "admin", "icon_class": "fa fa-wrench" },
+
 						{
-							"name": "view",
-							"type": "data_view",
-							"title": "appointments",
-							"text_if_empty": "No appointments :(",
-
-							"query_name": "appointments",
-							"query_params": [],
-
-							"insert_route": "appointments.insert",
-							"edit_route": "appointments.edit",
-							"edit_route_params": [
-								{ "name": "Id", "value": "this._id" }
+							"title": "{{userEmail}}",
+							"items": [
+								{ "title": "Settings", "route": "user_settings" },
+								{ "title": "Logout", "route": "logout" }
 							],
-							"details_route": "appointments.details",
-							"details_route_params": [
-								{ "name": "Id", "value": "this._id" }
-							]
-						}
-					],
-					"pages": [
-						{
-							"name": "insert",
-							"components": [
-								{
-									"name": "insert_form",
-									"type": "form",
-									"mode": "insert",
-									"title": "New appointment",
-
-									"query_name": "appointments_empty",
-									"query_params": [],
-
-									"submit_route": "appointments",
-									"cancel_route": "appointments"
-								}
-							]
-						},
-						{
-							"name": "details",
-							"route_params": ["Id"],
-							"components": [
-								{
-									"name": "details_form",
-									"type": "form",
-									"mode": "read_only",
-									"title": "Details",
-									"layout": "horizontal",
-
-									"query_name": "appointment",
-									"query_params": [],
-
-									"close_route": "appointments",
-									"back_route": "appointments"
-								}
-							]
-						},
-
-						{
-							"name": "edit",
-							"route_params": ["Id"],
-							"components": [
-								{
-									"name": "edit_form",
-									"type": "form",
-									"mode": "update",
-									"title": "Edit appointment",
-									"submit_route": "appointments",
-									"cancel_route": "appointments",
-
-									"query_name": "appointment",
-									"query_params": []
-								}
-							]
+							"icon_class": "fa fa-cog"
 						}
 					]
-				}				
+				}
+
 			]
+			
 		}
 	}
 }
