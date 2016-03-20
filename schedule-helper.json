@@ -1,0 +1,397 @@
+{
+	"application": {
+
+		"title": "Schedule-Helper",
+
+		"theme": "bootswatch-flatly",
+
+		"use_collection2": true,
+		
+		"roles": ["admin", "user"],
+        "default_role": "user",
+        "send_verification_email": true,
+
+		"collections": [
+			{
+				"name": "appointments",
+				"roles_allowed_to_read": ["admin", "owner"],
+                "roles_allowed_to_insert": ["admin", "user"],
+                "roles_allowed_to_update": ["admin", "owner"],
+                "roles_allowed_to_delete": ["admin", "owner"],
+				"fields": [
+					{ "name": "Id", "title": "Id", "required": true, "exportable": true },
+					{ "name": "Name", "title": "Name", "exportable": true },
+					{ "name": "Observation_One", "title": "Observation_One", "exportable": true },
+					{ "name": "Observation_Two", "title": "Observation_Two", "exportable": true },
+					{ "name": "Observation_Three", "title": "Observation_Three", "exportable": true },
+					{ "name": "Observation_Four", "title": "Observation_Four", "exportable": true },
+					{ "name": "Observation_Five", "title": "Observation_Five", "exportable": true },					
+					{ "name": "Notes", "title": "Notes", "input": "textarea", "exportable": true }
+					
+				]
+			}
+			
+		],
+
+		"queries": [
+			{
+				"name": "appointments",
+				"collection": "appointments",
+				"filter": {}
+			},
+			{
+				"name": "appointments_empty",
+				"collection": "appointments",
+				"filter": {"_id": null},
+				"find_one": true
+			},
+			{
+				"name": "appointment",
+				"collection": "appointments",
+				"filter": { "_id": ":Id" },
+				"find_one": true
+			},
+			{
+				"name": "admin_users",
+				"collection": "users",
+				"filter": {}
+			},
+			{
+				"name": "admin_user",
+				"collection": "users",
+				"filter": { "_id": ":userId" },
+				"find_one": true
+			},
+			{
+				"name": "users_null",
+				"collection": "users",
+				"filter": { "_id": null },
+				"find_one": true
+			},
+			{
+				"name": "current_user_data",
+				"collection": "users",
+				"filter": { "_id": "Meteor.userId()" },
+				"find_one": true
+			}
+		],
+		"public_zone": {
+
+            "pages": [
+                { 
+				 "name": "home_public", "title": 
+				 "Schedule Helper", 
+				 "text": "This is a scheduling applicaiton" 
+				},
+                { "name": "login", "template": "login" },
+
+                { "name": "verify_email", "template": "verify_email", "route_params": ["verifyEmailToken"] },
+				{ "name": "forgot_password", "template": "forgot_password" },
+				{ "name": "reset_password", "template": "reset_password", "route_params": ["resetPasswordToken"] }
+            ],
+
+            "components": [
+				{
+					"name": "left_menu",
+					"type": "menu",
+					"class": "nav navbar-nav",
+					"dest_selector": "#menu",
+					"items": [
+						{ "title": "Home", "route": "home_public" }
+					]
+				},
+
+				{
+					"name": "right_menu",
+					"type": "menu",
+					"class": "nav navbar-nav navbar-right",
+					"dest_selector": "#menu",
+					"items": [
+
+						{ "title": "Login", "route": "login" }
+					]
+				}
+			]
+        },
+		
+		"private_zone": {
+
+			"components": [
+				{
+					"name": "main_menu",
+					"type": "menu",
+					"items": [
+						{ "title": "Home page", "route": "home_private" },
+						{ "title": "Appointments", "route": "appointments" },						
+						{ "title": "Admin", "route": "admin" },
+						{ "title": "Logout", "route": "logout" }
+					]
+				}
+			],
+
+			"pages": [
+				{
+					"name": "admin",
+					"roles": ["admin"],
+					"pages": [
+						{
+							"name": "users",
+							"components": [
+								{
+									"name": "view",
+									"type": "data_view",
+									"title": "Users",
+									"text_if_empty": "No users yet",
+									"query_name": "admin_users",
+									"query_params": [],
+
+									"fields": [
+										{ "name": "profile.name", "title": "Name"},
+										{ "name": "profile.email", "title": "E-mail" },
+										{ "name": "roles", "title": "Role" }
+									],
+
+									"insert_route": "admin.users.insert",
+
+									"edit_route": "admin.users.edit",
+									"edit_route_params": [
+										{ "name": "userId", "value": "this._id" }
+									],
+
+									"details_route": "admin.users.details",
+									"details_route_params": [
+										{ "name": "userId", "value": "this._id" }
+									]
+								}
+							],
+							"pages": [
+								{
+									"name": "details",
+									"route_params": ["userId"],
+									"components": [
+										{
+											"name": "details_form",
+											"type": "form",
+											"mode": "read_only",
+											"title": "User details",
+											"query_name": "admin_user",
+											"query_params": [],
+											"fields": [
+												{ "name": "profile.name", "title": "Name"},
+												{ "name": "profile.email", "title": "E-mail", "type": "email" },
+												{ "name": "roles", "title": "Role" }
+											],
+											"close_route": "admin.users",
+											"back_route": "admin.users"
+										}
+									]
+								},
+								{
+									"name": "insert",
+									"components": [
+										{
+											"name": "insert_form",
+											"type": "form",
+											"mode": "insert",
+											"title": "Add new user",
+											"submit_route": "admin.users",
+											"cancel_route": "admin.users",
+											"query_name": "users_null",
+											"query_params": [],
+											"fields": [
+												{ "name": "profile.name", "title": "Name", "required": true },
+												{ "name": "profile.email", "title": "E-mail", "type": "email", "required": true },
+												{ "name": "password", "title": "Password", "input": "password", "required": true }
+											]
+										}
+									]
+								},
+								{
+									"name": "edit",
+									"route_params": ["userId"],
+									"components": [
+										{
+											"name": "edit_form",
+											"type": "form",
+											"mode": "update",
+											"title": "Edit user",
+											"submit_route": "admin.users",
+											"cancel_route": "admin.users",
+											"query_name": "admin_user",
+											"query_params": [],
+											"fields": [
+												{ "name": "profile.name", "title": "Name", "required": true },
+												{ "name": "profile.email", "title": "E-mail", "type": "email", "required": true },
+												{
+													"name": "roles",
+													"type": "array",
+													"title": "Role",
+													"input": "radio",
+													"input_items": [
+														{ "value": "user", "title": "User" },
+														{ "value": "admin", "title": "Admin" },
+														{ "value": "blocked", "title": "Blocked" }
+													]
+												}
+											]
+										}
+									]
+								}
+							]
+						}
+
+					],
+
+					"components": [
+						{
+							"name": "side_menu",
+							"type": "menu",
+							"class": "nav nav-stacked nav-pills",
+							"items": [
+								{ "title": "Users", "route": "admin.users" }
+							]
+						}
+					]
+				},
+
+				{
+					"name": "user_settings",
+					"roles": ["user", "admin"],
+					"pages": [
+						{
+							"name": "profile",
+							"components": [
+								{
+									"name": "edit_form",
+									"type": "form",
+									"mode": "update",
+									"title": "Edit your profile",
+									"submit_route": "user_settings.profile",
+									"query_name": "current_user_data",
+									"query_params": [],
+									"fields": [
+										{ "name": "profile.name", "title": "Name", "required": true },
+										{ "name": "profile.email", "title": "E-mail", "type": "email", "required": true },
+										{ "name": "profile.facebook", "title": "Facebook URL" },
+										{ "name": "profile.google", "title": "Google+ URL" },
+										{ "name": "profile.twitter", "title": "Twitter ID" },
+										{ "name": "profile.website", "title": "Website URL" }
+									]
+								}
+							]
+						},
+
+						{ "name": "change_pass", "template": "change_pass" }
+					],
+
+					"components": [
+						{
+							"name": "side_menu",
+							"type": "menu",
+							"class": "nav nav-stacked nav-pills",
+							"items": [
+								{ "title": "Profile", "route": "user_settings.profile" },
+								{ "title": "Change password", "route": "user_settings.change_pass" }
+							]
+						}
+					]
+				},
+                { "name": "logout", "template": "logout" },
+				{
+					"name": "home_private",
+					"title": "",
+					"components": [
+						{
+							"name": "home_jumbotron",
+							"title": "Research Inventory",
+							"type": "jumbotron",
+							"text": "This is an applicaiton for simple research data collection",
+							"button_title": "Continue &raquo;",
+							"button_route": "appointments"
+						}
+					]
+				},
+				{
+					"name": "appointments",
+					"components": [
+						{
+							"name": "view",
+							"type": "data_view",
+							"title": "appointments",
+							"text_if_empty": "No appointments :(",
+
+							"query_name": "appointments",
+							"query_params": [],
+
+							"insert_route": "appointments.insert",
+							"edit_route": "appointments.edit",
+							"edit_route_params": [
+								{ "name": "Id", "value": "this._id" }
+							],
+							"details_route": "appointments.details",
+							"details_route_params": [
+								{ "name": "Id", "value": "this._id" }
+							]
+						}
+					],
+					"pages": [
+						{
+							"name": "insert",
+							"components": [
+								{
+									"name": "insert_form",
+									"type": "form",
+									"mode": "insert",
+									"title": "New appointment",
+
+									"query_name": "appointments_empty",
+									"query_params": [],
+
+									"submit_route": "appointments",
+									"cancel_route": "appointments"
+								}
+							]
+						},
+						{
+							"name": "details",
+							"route_params": ["Id"],
+							"components": [
+								{
+									"name": "details_form",
+									"type": "form",
+									"mode": "read_only",
+									"title": "Details",
+									"layout": "horizontal",
+
+									"query_name": "appointment",
+									"query_params": [],
+
+									"close_route": "appointments",
+									"back_route": "appointments"
+								}
+							]
+						},
+
+						{
+							"name": "edit",
+							"route_params": ["Id"],
+							"components": [
+								{
+									"name": "edit_form",
+									"type": "form",
+									"mode": "update",
+									"title": "Edit appointment",
+									"submit_route": "appointments",
+									"cancel_route": "appointments",
+
+									"query_name": "appointment",
+									"query_params": []
+								}
+							]
+						}
+					]
+				}				
+			]
+		}
+	}
+}

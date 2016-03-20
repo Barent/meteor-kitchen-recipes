@@ -3,7 +3,7 @@
 
 		"title": "Research-Helper",
 
-		"theme": "bootswatch-superhero",
+		"theme": "bootswatch-darkly",
 
 		"use_collection2": true,
 		
@@ -106,12 +106,9 @@
 			],
 
 			"pages": [
-				{
-                    "name": "admin_panel",
-                    "title": "Admin panel",
-                    "roles": ["admin"],
-                   
-                },
+				
+                
+
                 { "name": "logout", "template": "logout" },
 				{
 					"name": "home_private",
