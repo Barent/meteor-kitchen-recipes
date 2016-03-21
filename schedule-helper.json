@@ -1,36 +1,36 @@
 {
 	"application": {
 
-		"title": "Schedule-Helper",
+		"title": "Simple-Scheduler",
 
 		"theme": "bootswatch-flatly",
 
 		"use_collection2": true,
 		
-		"roles": ["admin", "user"],
+		"roles": ["admin", "manager", "user"],
         "default_role": "user",
-        "send_verification_email": true,
+        "send_verification_email": false,
 
 		"collections": [
 			{
 				"name": "appointments",
 				"roles_allowed_to_read": ["admin", "owner"],
-                "roles_allowed_to_insert": ["admin", "user"],
-                "roles_allowed_to_update": ["admin", "owner"],
-                "roles_allowed_to_delete": ["admin", "owner"],
+                "roles_allowed_to_insert": ["admin", "manager", "user"],
+                "roles_allowed_to_update": ["admin", "manager", "owner"],
+                "roles_allowed_to_delete": ["admin", "manager"],
 				"fields": [
-					{ "name": "Id", "title": "Id", "required": true, "exportable": true },
-					{ "name": "Name", "title": "Name", "exportable": true },
-					{ "name": "Observation_One", "title": "Observation_One", "exportable": true },
-					{ "name": "Observation_Two", "title": "Observation_Two", "exportable": true },
-					{ "name": "Observation_Three", "title": "Observation_Three", "exportable": true },
-					{ "name": "Observation_Four", "title": "Observation_Four", "exportable": true },
-					{ "name": "Observation_Five", "title": "Observation_Five", "exportable": true },					
+					{ "name": "title", "title": "Title", "required": true, "exportable": true },
+					{ "name": "fieldtech", "title": "Field Tech",  "exportable": true },
+					{ "name": "startdate", "title": "Start Date", "input": "datepicker", "required": true, "exportable": true },
+					{ "name": "enddate", "title": "End Date", "input": "datepicker", "required": true, "exportable": true },
+					{ "name": "starttime", "title": "Start Time", "required": true, "exportable": true },
+					{ "name": "endtime", "title": "End Time", "required": true, "exportable": true },					
 					{ "name": "Notes", "title": "Notes", "input": "textarea", "exportable": true }
 					
 				]
 			}
 			
+		
 		],
 
 		"queries": [
@@ -80,8 +80,8 @@
             "pages": [
                 { 
 				 "name": "home_public", "title": 
-				 "Schedule Helper", 
-				 "text": "This is a scheduling applicaiton" 
+				 "Simple-Scheduler", 
+				 "text": "This is a simple scheduling applicaiton" 
 				},
                 { "name": "login", "template": "login" },
 
@@ -124,7 +124,7 @@
 							"name": "home_jumbotron",
 							"title": "Research Inventory",
 							"type": "jumbotron",
-							"text": "This is an applicaiton for simple research data collection",
+							"text": "This is an applicaiton for scheduling",
 							"button_title": "Continue &raquo;",
 							"button_route": "appointments"
 						}
@@ -210,7 +210,18 @@
 						}
 					]
 				},	
-
+				{ 
+					"name": "calendar", 
+					"title": "Calendar",
+					"components": [
+						{
+							"name": "calendar_display",
+							"type": "jumbotron",
+							"title": "Calendar",
+            				"text": "Calendar will go Here"
+						}
+					]
+				},
 				{
 					"name": "admin",
 					"roles": ["admin"],
@@ -310,6 +321,7 @@
 													"input": "radio",
 													"input_items": [
 														{ "value": "user", "title": "User" },
+														{ "value": "manager", "title": "Manager" },
 														{ "value": "admin", "title": "Admin" },
 														{ "value": "blocked", "title": "Blocked" }
 													]
@@ -352,11 +364,8 @@
 									"query_params": [],
 									"fields": [
 										{ "name": "profile.name", "title": "Name", "required": true },
-										{ "name": "profile.email", "title": "E-mail", "type": "email", "required": true },
-										{ "name": "profile.facebook", "title": "Facebook URL" },
-										{ "name": "profile.google", "title": "Google+ URL" },
-										{ "name": "profile.twitter", "title": "Twitter ID" },
-										{ "name": "profile.website", "title": "Website URL" }
+										{ "name": "profile.email", "title": "E-mail", "type": "email", "required": true }
+										
 									]
 								}
 							]
@@ -386,8 +395,8 @@
 					"type": "menu",
 					"items": [
 						{ "title": "Home page", "route": "home_private" },
-						{ "title": "Appointments", "route": "appointments" }						
-						
+						{ "title": "Appointments", "route": "appointments" },						
+						{"title": "Calendar", "route": "calendar"}
 						
 					]
 				},
