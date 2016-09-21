@@ -3,7 +3,7 @@
 
 		"title": "Simple-Scheduler",
 
-		"theme": "bootswatch-flatly",
+		"theme": "bootswatch-cerulean",
 
 		"use_collection2": true,
 		
@@ -13,18 +13,45 @@
 
 		"collections": [
 			{
-				"name": "appointments",
+				"name": "plans",
 				"roles_allowed_to_read": ["admin", "owner"],
                 "roles_allowed_to_insert": ["admin", "manager", "user"],
                 "roles_allowed_to_update": ["admin", "manager", "owner"],
                 "roles_allowed_to_delete": ["admin", "manager"],
 				"fields": [
 					{ "name": "title", "title": "Title", "required": true, "exportable": true },
-					{ "name": "fieldtech", "title": "Field Tech",  "exportable": true },
+					{
+						"name": "resourceId",
+						"title": "Resource",
+						"input": "select",
+						"lookup_query_name": "resource_list",
+						"lookup_field": "name",
+						"lookup_key": "_id",
+						"show_in_read_only_form": false,
+						"show_in_dataview": true,
+						"exportable": true,
+						"join_collection": "resources",
+						"join_container": "resource",
+						"join_fields": ["name", "resourceId", "email", "phone"]
+					},
 					{ "name": "startdate", "title": "Start Date", "input": "datepicker", "required": true, "exportable": true },
 					{ "name": "enddate", "title": "End Date", "input": "datepicker", "required": true, "exportable": true },
-					{ "name": "starttime", "title": "Start Time", "required": true, "exportable": true },
-					{ "name": "endtime", "title": "End Time", "required": true, "exportable": true },					
+					{ "name": "starttime", "title": "Start Time", "exportable": true },
+					{ "name": "endtime", "title": "End Time", "exportable": true },					
+					{ "name": "Notes", "title": "Notes", "input": "textarea", "exportable": true }
+					
+				]
+			},
+			{
+				"name": "resources",
+				"roles_allowed_to_read": ["admin", "owner"],
+                "roles_allowed_to_insert": ["admin", "manager", "user"],
+                "roles_allowed_to_update": ["admin", "manager", "owner"],
+                "roles_allowed_to_delete": ["admin", "manager"],
+				"fields": [
+					{ "name": "name", "title": "Name", "required": true, "exportable": true },
+					{ "name": "email", "title": "Email",  "exportable": true },
+					{ "name": "phone", "title": "Phone", "required": true, "exportable": true },				
 					{ "name": "Notes", "title": "Notes", "input": "textarea", "exportable": true }
 					
 				]
@@ -35,19 +62,42 @@
 
 		"queries": [
 			{
-				"name": "appointments",
-				"collection": "appointments",
+				"name": "plans",
+				"collection": "plans",
 				"filter": {}
 			},
 			{
-				"name": "appointments_empty",
-				"collection": "appointments",
+				"name": "plans_empty",
+				"collection": "plans",
 				"filter": {"_id": null},
 				"find_one": true
 			},
 			{
-				"name": "appointment",
-				"collection": "appointments",
+				"name": "plan",
+				"collection": "plans",
+				"filter": { "_id": ":Id" },
+				"find_one": true
+			},
+			{
+				"name": "resource_list",
+				"collection": "resources",
+				"filter": {},
+				"options": "{ \"transform\": \"function(doc) { Resources.find({ resourceId: doc._id }); return doc; }\", \"sort\": [\"name\"] }",		
+			},
+			{
+				"name": "resources",
+				"collection": "resources",
+				"filter": {}
+			},
+			{
+				"name": "resources_empty",
+				"collection": "resources",
+				"filter": {"_id": null},
+				"find_one": true
+			},
+			{
+				"name": "resource",
+				"collection": "resources",
 				"filter": { "_id": ":Id" },
 				"find_one": true
 			},
@@ -81,7 +131,7 @@
                 { 
 				 "name": "home_public", "title": 
 				 "Simple-Scheduler", 
-				 "text": "This is a simple scheduling applicaiton" 
+				 "text": "Welcome to Simple-Scheduler! A minimalistic applicaiton for scheduling your team. Click on Plans to get started by making a new plan for your organization." 
 				},
                 { "name": "login", "template": "login" },
 
@@ -122,32 +172,32 @@
 					"components": [
 						{
 							"name": "home_jumbotron",
-							"title": "Research Inventory",
+							"title": "Simple-Scheduler",
 							"type": "jumbotron",
 							"text": "This is an applicaiton for scheduling",
 							"button_title": "Continue &raquo;",
-							"button_route": "appointments"
+							"button_route": "plans"
 						}
 					]
 				},
 				{
-					"name": "appointments",
+					"name": "plans",
 					"components": [
 						{
 							"name": "view",
 							"type": "data_view",
-							"title": "appointments",
-							"text_if_empty": "No appointments :(",
+							"title": "Plans",
+							"text_if_empty": "No plans :(",
 
-							"query_name": "appointments",
+							"query_name": "plans",
 							"query_params": [],
 
-							"insert_route": "appointments.insert",
-							"edit_route": "appointments.edit",
+							"insert_route": "plans.insert",
+							"edit_route": "plans.edit",
 							"edit_route_params": [
 								{ "name": "Id", "value": "this._id" }
 							],
-							"details_route": "appointments.details",
+							"details_route": "plans.details",
 							"details_route_params": [
 								{ "name": "Id", "value": "this._id" }
 							]
@@ -161,13 +211,13 @@
 									"name": "insert_form",
 									"type": "form",
 									"mode": "insert",
-									"title": "New appointment",
+									"title": "New plan",
 
-									"query_name": "appointments_empty",
+									"query_name": "plans_empty",
 									"query_params": [],
 
-									"submit_route": "appointments",
-									"cancel_route": "appointments"
+									"submit_route": "plans",
+									"cancel_route": "plans"
 								}
 							]
 						},
@@ -182,11 +232,11 @@
 									"title": "Details",
 									"layout": "horizontal",
 
-									"query_name": "appointment",
+									"query_name": "plan",
 									"query_params": [],
 
-									"close_route": "appointments",
-									"back_route": "appointments"
+									"close_route": "plans",
+									"back_route": "plans"
 								}
 							]
 						},
@@ -199,11 +249,91 @@
 									"name": "edit_form",
 									"type": "form",
 									"mode": "update",
-									"title": "Edit appointment",
-									"submit_route": "appointments",
-									"cancel_route": "appointments",
+									"title": "Edit plan",
+									"submit_route": "plans",
+									"cancel_route": "plans",
 
-									"query_name": "appointment",
+									"query_name": "plan",
+									"query_params": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "resources",
+					"components": [
+						{
+							"name": "view",
+							"type": "data_view",
+							"title": "Plans",
+							"text_if_empty": "No Resources :(",
+
+							"query_name": "resources",
+							"query_params": [],
+
+							"insert_route": "resources.insert",
+							"edit_route": "resources.edit",
+							"edit_route_params": [
+								{ "name": "Id", "value": "this._id" }
+							],
+							"details_route": "resources.details",
+							"details_route_params": [
+								{ "name": "Id", "value": "this._id" }
+							]
+						}
+					],
+					"pages": [
+						{
+							"name": "insert",
+							"components": [
+								{
+									"name": "insert_form",
+									"type": "form",
+									"mode": "insert",
+									"title": "New Resource",
+
+									"query_name": "resources_empty",
+									"query_params": [],
+
+									"submit_route": "resources",
+									"cancel_route": "resources"
+								}
+							]
+						},
+						{
+							"name": "details",
+							"route_params": ["Id"],
+							"components": [
+								{
+									"name": "details_form",
+									"type": "form",
+									"mode": "read_only",
+									"title": "Details",
+									"layout": "horizontal",
+
+									"query_name": "resource",
+									"query_params": [],
+
+									"close_route": "resources",
+									"back_route": "resources"
+								}
+							]
+						},
+
+						{
+							"name": "edit",
+							"route_params": ["Id"],
+							"components": [
+								{
+									"name": "edit_form",
+									"type": "form",
+									"mode": "update",
+									"title": "Edit resource",
+									"submit_route": "resources",
+									"cancel_route": "resources",
+
+									"query_name": "resource",
 									"query_params": []
 								}
 							]
@@ -395,7 +525,8 @@
 					"type": "menu",
 					"items": [
 						{ "title": "Home page", "route": "home_private" },
-						{ "title": "Appointments", "route": "appointments" },						
+						{ "title": "Plans", "route": "plans" },
+						{ "title": "Resources", "route": "resources" },						
 						{"title": "Calendar", "route": "calendar"}
 						
 					]
